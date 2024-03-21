@@ -1,6 +1,18 @@
 local Roact = require(game.ReplicatedStorage.Roact)
+local TweenService = game:GetService("TweenService")
 
 local Wheel = Roact.Component:extend("Wheel")
+
+local TweenTime = 2
+local TweenStyle = Enum.EasingStyle.Linear
+
+local tweenStart = {}
+tweenStart.Size = UDim2.fromScale(0.2,0.2)
+
+local tweenGoal = {}
+tweenGoal.Size = UDim2.fromScale(0.7, 0.7)
+
+local tweenInfo = TweenInfo.new(TweenTime, TweenStyle)
 
 function Wheel:init()
 	self:setState({
@@ -18,8 +30,14 @@ function Wheel:render()
 			Position = UDim2.fromScale(.5, .5),
 			Text = "Spin!",
 			[Roact.Event.Activated] = function(rbx)
-				self:setState({spin = true})
-        		print(self.state.spin)
+				print(typeof(rbx.Size))
+				if rbx.Size == UDim2.new(0.7, 0, 0.7, 0) then
+					local tween = TweenService:Create(rbx, tweenInfo, tweenGoal)
+					tween:Play()
+				else
+					local tween = TweenService:Create(rbx, tweenInfo, tweenStart)
+					tween:Play()
+				end
     		end
 		},{
 			Aspect = Roact.createElement("UIAspectRatioConstraint",{
